@@ -1,0 +1,104 @@
+name: build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Show installed toolchain
+        shell: pwsh
+        run: |
+          cmake --version
+          & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -all -prerelease -format json -property installationVersion,displayName
+
+      # No -G: CMake selects the newest Visual Studio generator installed on the runner, so this keeps
+      # working when GitHub moves windows-latest to a newer Visual Studio (2022 -> 2026 ...).
+      - name: Configure (MSVC, Visual Studio generator, x64, C++20)
+        run: cmake -S . -B build -A x64
+
+      - name: Build runtime and tests
+        run: cmake --build build --config Release --parallel
+
+      - name: Show binaries (output directory is set explicitly to build/bin)
+        run: dir build\bin
+
+      - name: Run automated tests
+        run: ctest --test-dir build -C Release --output-on-failure
+
+      - name: Show the IDE (GUI) self-test log
+        if: always()
+        shell: pwsh
+        run: |
+          if (Test-Path build\selftest.log) { Get-Content build\selftest.log } else { Write-Host "no selftest.log was written" }
+
+      - name: Smoke-test the installed-style CLI on an example
+        run: build\bin\pcscript.exe examples\01_variables.pcs
+
+      - name: Install Inno Setup 6
+        shell: pwsh
+        run: |
+          choco install innosetup -y --no-progress
+          $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+          if (-not (Test-Path $iscc)) { throw "ISCC.exe not found at $iscc" }
+          echo "ISCC=$iscc" >> $env:GITHUB_ENV
+
+      - name: Build installer (PCScript-Setup.exe)
+        shell: pwsh
+        run: |
+          & $env:ISCC "/DBinDir=$PWD\build\bin" installer\PCScript.iss
+          if ($LASTEXITCODE -ne 0) { throw "ISCC failed with exit code $LASTEXITCODE" }
+          Get-Item out\PCScript-Setup.exe | Format-List Name,Length
+
+      - name: Test the installer (silent install, run, uninstall)
+        shell: pwsh
+        run: |
+          $dir = "C:\pcs-test"
+          $p = Start-Process -FilePath out\PCScript-Setup.exe -Wait -PassThru -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOX','/NORESTART','/CURRENTUSER',"/DIR=$dir",'/TASKS=addtopath,associate','/LOG=install.log'
+          if ($p.ExitCode -ne 0) { throw "Installer exit code $($p.ExitCode)" }
+          foreach ($f in 'pcscript.exe','pcscript-studio.exe','extensions\pcs.theme.ocean\extension.json','unins000.exe','assets\app.ico','assets\pcs_file.ico','docs\LANGUAGE_REFERENCE.md','LICENSE') {
+            if (-not (Test-Path "$dir\$f")) { throw "Missing installed file: $f" }
+          }
+          & "$dir\pcscript.exe" --version
+          $ex = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'PCScript\Examples'
+          $count = (Get-ChildItem $ex -Filter *.pcs).Count
+          if ($count -lt 8) { throw "Expected at least 8 examples in $ex, found $count" }
+          & "$dir\pcscript.exe" "$ex\09_classes.pcs"
+          if ($LASTEXITCODE -ne 0) { throw "Example failed with exit code $LASTEXITCODE" }
+          $assoc = (Get-ItemProperty 'HKCU:\Software\Classes\.pcs').'(default)'
+          if ($assoc -ne 'PCScript.Source') { throw ".pcs association missing" }
+          $userPath = [Environment]::GetEnvironmentVariable('Path','User')
+          if ($userPath -notlike "*$dir*") { throw "PATH entry missing" }
+          $u = Start-Process -FilePath "$dir\unins000.exe" -Wait -PassThru -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOX','/NORESTART'
+          Start-Sleep -Seconds 5
+          if (Test-Path "$dir\pcscript.exe") { throw "pcscript.exe still present after uninstall" }
+          if ([Environment]::GetEnvironmentVariable('Path','User') -like "*$dir*") { throw "PATH entry not removed" }
+          if (Test-Path 'HKCU:\Software\Classes\.pcs') { throw ".pcs association not removed" }
+          Write-Host "Installer install/run/uninstall test passed"
+
+      - name: Upload installer log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: installer-log
+          path: install.log
+          if-no-files-found: ignore
+
+      - name: Upload binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: pcscript-windows-x64
+          path: |
+            build/bin/pcscript.exe
+            build/bin/pcscript_tests.exe
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: PCScript-Setup
+          path: out/PCScript-Setup.exe
