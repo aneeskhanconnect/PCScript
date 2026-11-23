@@ -1,0 +1,40 @@
+// Sequential and random-access file handling
+TYPE Player
+    DECLARE Name : STRING
+    DECLARE Score : INTEGER
+ENDTYPE
+
+DECLARE Line : STRING
+DECLARE Count : INTEGER
+DECLARE P : Player
+
+OPENFILE "demo_notes.txt" FOR WRITE
+WRITEFILE "demo_notes.txt", "First line"
+WRITEFILE "demo_notes.txt", "Second line"
+CLOSEFILE "demo_notes.txt"
+
+OPENFILE "demo_notes.txt" FOR APPEND
+WRITEFILE "demo_notes.txt", "Third line"
+CLOSEFILE "demo_notes.txt"
+
+Count <- 0
+OPENFILE "demo_notes.txt" FOR READ
+WHILE NOT EOF("demo_notes.txt") DO
+    READFILE "demo_notes.txt", Line
+    Count <- Count + 1
+    OUTPUT Count, ": ", Line
+ENDWHILE
+CLOSEFILE "demo_notes.txt"
+
+OPENFILE "demo_players.dat" FOR RANDOM
+P.Name <- "Zara"
+P.Score <- 120
+SEEK "demo_players.dat", 1
+PUTRECORD "demo_players.dat", P
+P.Name <- "Omar"
+P.Score <- 95
+PUTRECORD "demo_players.dat", P
+SEEK "demo_players.dat", 2
+GETRECORD "demo_players.dat", P
+OUTPUT "Record 2: ", P.Name, " scored ", P.Score
+CLOSEFILE "demo_players.dat"

@@ -1,0 +1,340 @@
+### operator precedence and associativity
+OUTPUT 2 + 3 * 4
+OUTPUT (2 + 3) * 4
+OUTPUT 2 ^ 3 ^ 2
+OUTPUT -2 ^ 2
+OUTPUT 10 - 4 - 3
+OUTPUT 7 DIV 2 * 2
+OUTPUT 17 MOD 5 + 1
+OUTPUT NOT TRUE OR TRUE
+OUTPUT 1 + 2 = 3 AND 4 > 3
+OUTPUT "a" & "b" = "ab"
+>>> out
+14
+20
+512
+-4
+3
+6
+3
+TRUE
+TRUE
+TRUE
+### division always gives REAL, DIV and MOD are integer
+OUTPUT 7 / 2
+OUTPUT 8 / 2
+OUTPUT 7 DIV 2
+OUTPUT -7 DIV 2
+OUTPUT 7 MOD 3
+OUTPUT 0.1 + 0.2
+>>> out
+3.5
+4
+3
+-3
+1
+0.3
+### default values of every type
+DECLARE a : INTEGER
+DECLARE b : REAL
+DECLARE c : STRING
+DECLARE d : CHAR
+DECLARE e : BOOLEAN
+DECLARE f : DATE
+OUTPUT a, "|", b, "|", c, "|", d, "|", e, "|", f
+>>> out
+0|0|| |FALSE|01/01/1970
+### assignment arrows, constants, case-insensitive identifiers
+DECLARE Count : INTEGER
+CONSTANT Limit = 10
+count <- 4
+Count ← Count + 1
+OUTPUT COUNT, " ", limit
+>>> out
+5 10
+### INTEGER widens to REAL on assignment
+DECLARE r : REAL
+r <- 3
+OUTPUT r / 2
+>>> out
+1.5
+### nested IF / ELSE
+DECLARE n : INTEGER
+FOR n <- 1 TO 3
+    IF n = 1 THEN
+        OUTPUT "one"
+    ELSE
+        IF n = 2 THEN
+            OUTPUT "two"
+        ELSE
+            OUTPUT "many"
+        ENDIF
+    ENDIF
+NEXT n
+>>> out
+one
+two
+many
+### THEN on the next line is accepted
+IF 1 < 2
+THEN
+    OUTPUT "ok"
+ENDIF
+>>> out
+ok
+### CASE with no match and no OTHERWISE does nothing
+DECLARE x : INTEGER
+x <- 99
+CASE OF x
+    1 : OUTPUT "one"
+    2 TO 5 : OUTPUT "few"
+ENDCASE
+OUTPUT "done"
+>>> out
+done
+### CASE with multiple statements per branch
+DECLARE x : INTEGER
+x <- 2
+CASE OF x
+    1 : OUTPUT "a"
+    2 : OUTPUT "b1"
+        OUTPUT "b2"
+    OTHERWISE : OUTPUT "z"
+ENDCASE
+>>> out
+b1
+b2
+### FOR with negative step, zero iterations and loop variable
+DECLARE i : INTEGER
+FOR i <- 5 TO 1 STEP -2
+    OUTPUT i
+NEXT i
+FOR i <- 3 TO 1
+    OUTPUT "never"
+NEXT i
+FOR i <- 1 TO 3
+NEXT
+OUTPUT "end"
+>>> out
+5
+3
+1
+end
+### WHILE may run zero times, REPEAT runs at least once
+DECLARE i : INTEGER
+i <- 10
+WHILE i < 5 DO
+    OUTPUT "never"
+ENDWHILE
+REPEAT
+    OUTPUT "once"
+UNTIL TRUE
+>>> out
+once
+### nested loops
+DECLARE i, j : INTEGER
+FOR i <- 1 TO 2
+    FOR j <- 1 TO 2
+        OUTPUT i * 10 + j
+    NEXT j
+NEXT i
+>>> out
+11
+12
+21
+22
+### arrays with negative bounds and 2D indexing
+DECLARE A : ARRAY[-2:2] OF INTEGER
+DECLARE G : ARRAY[0:1, 5:6] OF STRING
+A[-2] <- 7
+A[2] <- 9
+G[1, 6] <- "x"
+OUTPUT A[-2], " ", A[0], " ", A[2], " [", G[0, 5], "] ", G[1, 6]
+>>> out
+7 0 9 [] x
+### whole-array assignment copies
+DECLARE A, B : ARRAY[1:3] OF INTEGER
+A[1] <- 1
+B <- A
+B[1] <- 99
+OUTPUT A[1], " ", B[1]
+>>> out
+1 99
+### BYREF with array elements and BYVAL isolation
+PROCEDURE Swap(BYREF a : INTEGER, BYREF b : INTEGER)
+    DECLARE t : INTEGER
+    t <- a
+    a <- b
+    b <- t
+ENDPROCEDURE
+PROCEDURE Bump(BYVAL v : INTEGER)
+    v <- v + 100
+ENDPROCEDURE
+DECLARE L : ARRAY[1:2] OF INTEGER
+L[1] <- 1
+L[2] <- 2
+CALL Swap(L[1], L[2])
+CALL Bump(L[1])
+OUTPUT L[1], " ", L[2]
+>>> out
+2 1
+### procedures read and write global variables
+DECLARE Total : INTEGER
+PROCEDURE Add(n : INTEGER)
+    Total <- Total + n
+ENDPROCEDURE
+Total <- 1
+CALL Add(5)
+Add(4)
+OUTPUT Total
+>>> out
+10
+### local variables hide globals
+DECLARE x : INTEGER
+x <- 1
+PROCEDURE P()
+    DECLARE x : INTEGER
+    x <- 50
+ENDPROCEDURE
+CALL P
+OUTPUT x
+>>> out
+1
+### function returning REAL from INTEGER and early return
+FUNCTION Half(n : INTEGER) RETURNS REAL
+    IF n = 0 THEN
+        RETURN 0
+    ENDIF
+    RETURN n / 2
+ENDFUNCTION
+OUTPUT Half(0), " ", Half(5)
+>>> out
+0 2.5
+### mutual recursion and deep recursion
+FUNCTION IsEven(n : INTEGER) RETURNS BOOLEAN
+    IF n = 0 THEN
+        RETURN TRUE
+    ENDIF
+    RETURN IsOdd(n - 1)
+ENDFUNCTION
+FUNCTION IsOdd(n : INTEGER) RETURNS BOOLEAN
+    IF n = 0 THEN
+        RETURN FALSE
+    ENDIF
+    RETURN IsEven(n - 1)
+ENDFUNCTION
+FUNCTION Sum(n : INTEGER) RETURNS INTEGER
+    IF n = 0 THEN
+        RETURN 0
+    ENDIF
+    RETURN n + Sum(n - 1)
+ENDFUNCTION
+OUTPUT IsEven(10), " ", IsOdd(7), " ", Sum(1500)
+>>> out
+TRUE TRUE 1125750
+### records: nested, copied by value, arrays of records
+TYPE Point
+    DECLARE X, Y : INTEGER
+ENDTYPE
+TYPE Line
+    DECLARE A, B : Point
+ENDTYPE
+DECLARE L, M : Line
+DECLARE Pts : ARRAY[1:2] OF Point
+L.A.X <- 1
+L.B.Y <- 2
+M <- L
+M.A.X <- 50
+Pts[2].Y <- 8
+OUTPUT L.A.X, " ", L.B.Y, " ", M.A.X, " ", Pts[2].Y
+>>> out
+1 2 50 8
+### enumerated types compare and print
+TYPE Colour = (Red, Green, Blue)
+DECLARE c : Colour
+c <- Green
+OUTPUT c
+OUTPUT c = Green, " ", c < Blue, " ", c = Red
+>>> out
+Green
+TRUE TRUE FALSE
+### pointers
+TYPE IntPtr = ^INTEGER
+DECLARE v : INTEGER
+DECLARE p : IntPtr
+v <- 4
+p <- ^v
+p^ <- p^ * 3
+OUTPUT v, " ", p^
+>>> out
+12 12
+### comparisons of strings, chars, booleans
+OUTPUT "apple" < "banana", " ", 'a' < 'b', " ", "abc" = "abc", " ", TRUE <> FALSE
+>>> out
+TRUE TRUE TRUE TRUE
+### CHAR widens to STRING
+DECLARE s : STRING
+s <- 'x'
+OUTPUT s & 'y'
+>>> out
+xy
+### INPUT of every type
+DECLARE i : INTEGER
+DECLARE r : REAL
+DECLARE s : STRING
+DECLARE b : BOOLEAN
+DECLARE c : CHAR
+INPUT i
+INPUT r
+INPUT s
+INPUT b
+INPUT c
+OUTPUT i + 1, " ", r * 2, " [", s, "] ", NOT b, " ", c
+>>> in
+41
+1.25
+hello world
+true
+Q
+>>> out
+42 2.5 [hello world] FALSE Q
+### interactive loop reading until sentinel
+DECLARE n, total : INTEGER
+total <- 0
+INPUT n
+WHILE n <> 0 DO
+    total <- total + n
+    INPUT n
+ENDWHILE
+OUTPUT total
+>>> in
+5
+10
+-3
+0
+>>> out
+12
+### comments are ignored
+OUTPUT 1 // trailing comment
+// full line comment
+OUTPUT 2
+>>> out
+1
+2
+### built-in type names are accepted in any case
+DECLARE n : integer
+n <- 4
+OUTPUT n
+>>> out
+4
+### DECLARE inside a loop body re-initialises each pass
+DECLARE i : INTEGER
+FOR i <- 1 TO 3
+    DECLARE t : INTEGER
+    OUTPUT t
+    t <- i * 10
+NEXT i
+>>> out
+0
+0
+0

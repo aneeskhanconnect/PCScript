@@ -1,0 +1,19 @@
+// Two-dimensional array: a multiplication table
+DECLARE Table : ARRAY[1:4, 1:4] OF INTEGER
+DECLARE Row, Col : INTEGER
+DECLARE Line : STRING
+
+FOR Row <- 1 TO 4
+    FOR Col <- 1 TO 4
+        Table[Row, Col] <- Row * Col
+    NEXT Col
+NEXT Row
+
+FOR Row <- 1 TO 4
+    Line <- ""
+    FOR Col <- 1 TO 4
+        Line <- Line & NUM_TO_STR(Table[Row, Col]) & " "
+    NEXT Col
+    OUTPUT Line
+NEXT Row
+OUTPUT "Table[3,4] = ", Table[3, 4]

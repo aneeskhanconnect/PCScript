@@ -1,0 +1,23 @@
+// Variables, constants and calculations
+CONSTANT Pi <- 3.14159
+DECLARE Radius : REAL
+DECLARE Area : REAL
+DECLARE Count : INTEGER
+DECLARE Name : STRING
+DECLARE Grade : CHAR
+DECLARE Passed : BOOLEAN
+
+Radius <- 5
+Area <- Pi * Radius ^ 2
+Count <- 17
+Name <- "Ayesha"
+Grade <- 'A'
+Passed <- Count > 10 AND Grade = 'A'
+
+OUTPUT "Name: ", Name
+OUTPUT "Area of circle: ", Area
+OUTPUT "Count DIV 5 = ", Count DIV 5
+OUTPUT "Count MOD 5 = ", Count MOD 5
+OUTPUT "Count / 5 = ", Count / 5
+OUTPUT "Grade: ", Grade, "  Passed: ", Passed
+OUTPUT "Joined: " & Name & " (" & NUM_TO_STR(Count) & ")"

@@ -1,0 +1,30 @@
+// CASE with values, lists, ranges and OTHERWISE
+DECLARE Mark : INTEGER
+DECLARE Day : INTEGER
+DECLARE Letter : CHAR
+
+FUNCTION GradeOf(Score : INTEGER) RETURNS STRING
+    CASE OF Score
+        90 TO 100 : RETURN "A*"
+        80 TO 89 : RETURN "A"
+        70 TO 79 : RETURN "B"
+        OTHERWISE : RETURN "U"
+    ENDCASE
+ENDFUNCTION
+
+FOR Mark <- 65 TO 100 STEP 15
+    OUTPUT Mark, " -> ", GradeOf(Mark)
+NEXT Mark
+
+FOR Day <- 1 TO 7
+    CASE OF Day
+        1, 7 : OUTPUT Day, " weekend"
+        2, 3, 4, 5, 6 : OUTPUT Day, " weekday"
+    ENDCASE
+NEXT Day
+
+Letter <- 'e'
+CASE OF Letter
+    'a', 'e', 'i', 'o', 'u' : OUTPUT Letter, " is a vowel"
+    OTHERWISE : OUTPUT Letter, " is a consonant"
+ENDCASE

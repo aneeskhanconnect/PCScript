@@ -1,0 +1,101 @@
+### mismatched end keyword reports expected token
+IF TRUE THEN
+    OUTPUT 1
+ENDWHILE
+>>> error E102 Expected: ENDIF
+### missing end of block at end of file
+WHILE TRUE DO
+    OUTPUT 1
+>>> error E103 opened on line 1
+### stray closing keyword
+OUTPUT 1
+ENDIF
+>>> error E102
+### = used instead of assignment
+DECLARE x : INTEGER
+x = 5
+>>> error E102 <-
+### missing THEN
+IF 1 < 2
+    OUTPUT 1
+ENDIF
+>>> error E102 Expected: THEN
+### missing closing bracket
+OUTPUT (1 + 2
+>>> error E102
+### unterminated string
+OUTPUT "oops
+>>> error E101
+### FOR with wrong NEXT variable
+DECLARE i, j : INTEGER
+FOR i <- 1 TO 2
+NEXT j
+>>> error E102
+### two statements on one line
+OUTPUT 1 OUTPUT 2
+>>> error E102 end of line
+### bad array bounds syntax
+DECLARE a : ARRAY[1..3] OF INTEGER
+>>> error E102
+### undeclared variable
+x <- 1
+>>> error E201
+### duplicate declaration
+DECLARE x : INTEGER
+DECLARE x : STRING
+>>> error E202
+### assigning a string to an INTEGER
+DECLARE x : INTEGER
+x <- "five"
+>>> error E203
+### assigning REAL to INTEGER suggests INT
+DECLARE x : INTEGER
+DECLARE y : REAL
+y <- 1.5
+x <- y
+>>> error E203 INTEGER
+### + does not join strings
+OUTPUT "a" + "b"
+>>> error E203
+### unknown procedure
+CALL Nothing()
+>>> error E204
+### wrong number of arguments
+PROCEDURE P(a : INTEGER)
+    OUTPUT a
+ENDPROCEDURE
+CALL P(1, 2)
+>>> error E205
+### built-in with wrong argument count
+OUTPUT LEFT("abc")
+>>> error E205
+### assigning to a constant
+CONSTANT K <- 1
+K <- 2
+>>> error E206
+### RETURN outside a function
+RETURN 1
+>>> error E207
+### unknown type
+DECLARE x : Foo
+>>> error E208 Unknown type 'Foo'
+### non-boolean condition
+DECLARE x : INTEGER
+x <- 1
+IF x THEN
+    OUTPUT 1
+ENDIF
+>>> error E209
+### procedure used as a value
+PROCEDURE P()
+    OUTPUT 1
+ENDPROCEDURE
+DECLARE x : INTEGER
+x <- P()
+>>> error E204
+### function used as a statement
+FUNCTION F() RETURNS INTEGER
+    RETURN 1
+ENDFUNCTION
+CALL F()
+>>> error E204

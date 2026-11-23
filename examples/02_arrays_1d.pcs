@@ -1,0 +1,29 @@
+// One-dimensional arrays with custom bounds
+DECLARE Marks : ARRAY[1:5] OF INTEGER
+DECLARE Temps : ARRAY[0:3] OF REAL
+DECLARE i : INTEGER
+DECLARE Total : INTEGER
+DECLARE Highest : INTEGER
+
+Marks[1] <- 72
+Marks[2] <- 85
+Marks[3] <- 64
+Marks[4] <- 91
+Marks[5] <- 78
+
+Total <- 0
+Highest <- Marks[1]
+FOR i <- 1 TO 5
+    Total <- Total + Marks[i]
+    IF Marks[i] > Highest THEN
+        Highest <- Marks[i]
+    ENDIF
+NEXT i
+OUTPUT "Total: ", Total
+OUTPUT "Average: ", Total / 5
+OUTPUT "Highest: ", Highest
+
+FOR i <- 0 TO 3
+    Temps[i] <- i * 2.5
+NEXT i
+OUTPUT "Temps[3] = ", Temps[3]

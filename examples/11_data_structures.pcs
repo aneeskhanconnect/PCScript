@@ -1,0 +1,42 @@
+// Enumerated type, pointer, and a stack built from an array
+TYPE Season = (Spring, Summer, Autumn, Winter)
+TYPE IntPointer = ^INTEGER
+
+DECLARE Current : Season
+DECLARE Target : INTEGER
+DECLARE Ptr : IntPointer
+DECLARE Stack : ARRAY[1:5] OF INTEGER
+DECLARE Top : INTEGER
+
+PROCEDURE Push(Value : INTEGER)
+    IF Top = 5 THEN
+        OUTPUT "Stack full"
+    ELSE
+        Top <- Top + 1
+        Stack[Top] <- Value
+    ENDIF
+ENDPROCEDURE
+
+FUNCTION Pop() RETURNS INTEGER
+    DECLARE Value : INTEGER
+    Value <- Stack[Top]
+    Top <- Top - 1
+    RETURN Value
+ENDFUNCTION
+
+Current <- Autumn
+OUTPUT "Season: ", Current
+IF Current = Autumn THEN
+    OUTPUT "Leaves are falling"
+ENDIF
+
+Target <- 10
+Ptr <- ^Target
+Ptr^ <- Ptr^ + 5
+OUTPUT "Target via pointer: ", Target
+
+Top <- 0
+CALL Push(3)
+CALL Push(7)
+CALL Push(9)
+OUTPUT Pop(), " ", Pop(), " ", Pop()

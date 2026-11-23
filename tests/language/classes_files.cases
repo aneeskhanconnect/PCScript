@@ -1,0 +1,105 @@
+### inheritance, overriding, SUPER method call and virtual dispatch
+CLASS A
+    PUBLIC FUNCTION Who() RETURNS STRING
+        RETURN "A"
+    ENDFUNCTION
+    PUBLIC FUNCTION Hello() RETURNS STRING
+        RETURN "Hello from " & Who()
+    ENDFUNCTION
+ENDCLASS
+CLASS B INHERITS A
+    PUBLIC FUNCTION Who() RETURNS STRING
+        RETURN "B+" & SUPER.Who()
+    ENDFUNCTION
+ENDCLASS
+DECLARE x : A
+x <- NEW B
+OUTPUT x.Hello()
+>>> out
+Hello from B+A
+### objects are references; fields are per object
+CLASS Counter
+    PUBLIC N : INTEGER
+    PUBLIC PROCEDURE NEW()
+        N <- 10
+    ENDPROCEDURE
+    PUBLIC PROCEDURE Inc()
+        N <- N + 1
+    ENDPROCEDURE
+ENDCLASS
+DECLARE a, b, c : Counter
+a <- NEW Counter()
+b <- a
+c <- NEW Counter
+CALL a.Inc()
+CALL b.Inc()
+OUTPUT a.N, " ", b.N, " ", c.N, " ", a = b, " ", a = c
+>>> out
+12 12 10 TRUE FALSE
+### PRIVATE field and method cannot be used from outside
+CLASS Safe
+    PRIVATE Code : INTEGER
+    PUBLIC PROCEDURE NEW()
+        Code <- 1234
+    ENDPROCEDURE
+ENDCLASS
+DECLARE s : Safe
+s <- NEW Safe()
+OUTPUT s.Code
+>>> error R308
+### PRIVATE method cannot be called from outside
+CLASS Safe
+    PRIVATE PROCEDURE Secret()
+        OUTPUT "hidden"
+    ENDPROCEDURE
+ENDCLASS
+DECLARE s : Safe
+s <- NEW Safe
+CALL s.Secret()
+>>> error R308
+### sequential files: write, append, read with EOF
+OPENFILE "pcs_test_seq.tmp" FOR WRITE
+WRITEFILE "pcs_test_seq.tmp", "alpha"
+WRITEFILE "pcs_test_seq.tmp", 42
+CLOSEFILE "pcs_test_seq.tmp"
+OPENFILE "pcs_test_seq.tmp" FOR APPEND
+WRITEFILE "pcs_test_seq.tmp", "omega"
+CLOSEFILE "pcs_test_seq.tmp"
+DECLARE L : STRING
+DECLARE N : INTEGER
+OPENFILE "pcs_test_seq.tmp" FOR READ
+READFILE "pcs_test_seq.tmp", L
+READFILE "pcs_test_seq.tmp", N
+OUTPUT L, " ", N + 1, " ", EOF("pcs_test_seq.tmp")
+READFILE "pcs_test_seq.tmp", L
+OUTPUT L, " ", EOF("pcs_test_seq.tmp")
+CLOSEFILE "pcs_test_seq.tmp"
+>>> out
+alpha 43 FALSE
+omega TRUE
+### random-access files: SEEK, PUTRECORD, GETRECORD persist across open/close
+TYPE Item
+    DECLARE Id : INTEGER
+    DECLARE Label : STRING
+    DECLARE Price : REAL
+    DECLARE OnSale : BOOLEAN
+ENDTYPE
+DECLARE It, Back : Item
+OPENFILE "pcs_test_rand.tmp" FOR RANDOM
+It.Id <- 7
+It.Label <- "pen"
+It.Price <- 1.5
+It.OnSale <- TRUE
+SEEK "pcs_test_rand.tmp", 3
+PUTRECORD "pcs_test_rand.tmp", It
+CLOSEFILE "pcs_test_rand.tmp"
+OPENFILE "pcs_test_rand.tmp" FOR RANDOM
+SEEK "pcs_test_rand.tmp", 3
+GETRECORD "pcs_test_rand.tmp", Back
+OUTPUT Back.Id, " ", Back.Label, " ", Back.Price, " ", Back.OnSale
+CLOSEFILE "pcs_test_rand.tmp"
+>>> out
+7 pen 1.5 TRUE
+### reading a missing file is a clear error
+OPENFILE "definitely_missing_file.txt" FOR READ
+>>> error R306

@@ -1,0 +1,36 @@
+// Functions and recursion
+FUNCTION Factorial(N : INTEGER) RETURNS INTEGER
+    IF N <= 1 THEN
+        RETURN 1
+    ENDIF
+    RETURN N * Factorial(N - 1)
+ENDFUNCTION
+
+FUNCTION Fibonacci(N : INTEGER) RETURNS INTEGER
+    IF N < 2 THEN
+        RETURN N
+    ENDIF
+    RETURN Fibonacci(N - 1) + Fibonacci(N - 2)
+ENDFUNCTION
+
+FUNCTION Reverse(S : STRING) RETURNS STRING
+    IF LENGTH(S) <= 1 THEN
+        RETURN S
+    ENDIF
+    RETURN Reverse(MID(S, 2, LENGTH(S) - 1)) & LEFT(S, 1)
+ENDFUNCTION
+
+FUNCTION Power(Base : REAL, Exp : INTEGER) RETURNS REAL
+    IF Exp = 0 THEN
+        RETURN 1
+    ENDIF
+    RETURN Base * Power(Base, Exp - 1)
+ENDFUNCTION
+
+DECLARE i : INTEGER
+FOR i <- 0 TO 10 STEP 5
+    OUTPUT i, "! = ", Factorial(i)
+NEXT i
+OUTPUT "Fibonacci(15) = ", Fibonacci(15)
+OUTPUT "Reverse: ", Reverse("PCScript")
+OUTPUT "2.5 ^ 3 = ", Power(2.5, 3)

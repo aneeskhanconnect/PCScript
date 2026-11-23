@@ -1,0 +1,29 @@
+// User-defined records
+TYPE Student
+    DECLARE Name : STRING
+    DECLARE Age : INTEGER
+    DECLARE Marks : ARRAY[1:3] OF INTEGER
+ENDTYPE
+
+PROCEDURE Show(S : Student)
+    OUTPUT S.Name, " (", S.Age, ") first mark: ", S.Marks[1]
+ENDPROCEDURE
+
+DECLARE Pupil : Student
+DECLARE Class : ARRAY[1:2] OF Student
+DECLARE Copy : Student
+
+Pupil.Name <- "Ali"
+Pupil.Age <- 16
+Pupil.Marks[1] <- 88
+CALL Show(Pupil)
+
+Copy <- Pupil
+Copy.Name <- "Bilal"
+CALL Show(Copy)
+CALL Show(Pupil)
+
+Class[1] <- Pupil
+Class[2].Name <- "Hira"
+Class[2].Age <- 15
+OUTPUT Class[1].Name, " and ", Class[2].Name

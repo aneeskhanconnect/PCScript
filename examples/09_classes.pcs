@@ -1,0 +1,45 @@
+// Classes, inheritance, PUBLIC / PRIVATE, constructors and SUPER
+CLASS Animal
+    PRIVATE Name : STRING
+    PRIVATE Legs : INTEGER
+    PUBLIC PROCEDURE NEW(GivenName : STRING, GivenLegs : INTEGER)
+        Name <- GivenName
+        Legs <- GivenLegs
+    ENDPROCEDURE
+    PUBLIC FUNCTION GetName() RETURNS STRING
+        RETURN Name
+    ENDFUNCTION
+    PUBLIC FUNCTION Describe() RETURNS STRING
+        RETURN Name & " has " & NUM_TO_STR(Legs) & " legs"
+    ENDFUNCTION
+    PUBLIC PROCEDURE Speak()
+        OUTPUT Name, " makes a sound"
+    ENDPROCEDURE
+ENDCLASS
+
+CLASS Dog INHERITS Animal
+    PRIVATE Tricks : INTEGER
+    PUBLIC PROCEDURE NEW(GivenName : STRING)
+        SUPER.NEW(GivenName, 4)
+        Tricks <- 0
+    ENDPROCEDURE
+    PUBLIC PROCEDURE Learn()
+        Tricks <- Tricks + 1
+    ENDPROCEDURE
+    PUBLIC PROCEDURE Speak()
+        OUTPUT GetName(), " says Woof (knows ", Tricks, " tricks)"
+    ENDPROCEDURE
+ENDCLASS
+
+DECLARE Pet : Animal
+DECLARE Rex : Dog
+Pet <- NEW Animal("Fish", 0)
+Rex <- NEW Dog("Rex")
+CALL Rex.Learn()
+CALL Rex.Learn()
+CALL Pet.Speak()
+CALL Rex.Speak()
+OUTPUT Pet.Describe()
+OUTPUT Rex.Describe()
+Pet <- Rex
+CALL Pet.Speak()
