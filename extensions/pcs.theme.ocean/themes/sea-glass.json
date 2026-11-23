@@ -1,0 +1,26 @@
+{
+  "name": "Sea Glass",
+  "base": "light",
+  "colors": {
+    "editorBg": "#F3FAF9",
+    "editorFg": "#12363B",
+    "gutterBg": "#E4F2F0",
+    "gutterFg": "#7FA3A3",
+    "currentLine": "#E6F4F2",
+    "selection": "#B7E4DF",
+    "keyword": "#00718F",
+    "type": "#00806B",
+    "builtin": "#5A4FCF",
+    "string": "#A15C00",
+    "number": "#B3361B",
+    "comment": "#6F9494",
+    "uiBg": "#DDEEEC",
+    "panelBg": "#EAF5F3",
+    "tabActiveBg": "#F3FAF9",
+    "tabInactiveBg": "#D3E8E5",
+    "accent": "#00718F",
+    "statusBg": "#00718F",
+    "popupSelBg": "#00718F",
+    "consoleBg": "#F3FAF9"
+  }
+}

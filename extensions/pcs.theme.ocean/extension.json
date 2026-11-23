@@ -1,0 +1,17 @@
+{
+  "id": "pcs.theme.ocean",
+  "name": "Ocean Themes",
+  "version": "1.0.0",
+  "author": "PCScript",
+  "description": "Two calm blue-green colour themes: Ocean Deep (dark) and Sea Glass (light).",
+  "contributes": {
+    "themes": [
+      {
+        "file": "themes/ocean-deep.json"
+      },
+      {
+        "file": "themes/sea-glass.json"
+      }
+    ]
+  }
+}

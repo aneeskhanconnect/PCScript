@@ -1,0 +1,32 @@
+{
+  "name": "Ocean Deep",
+  "base": "dark",
+  "colors": {
+    "editorBg": "#0B1F2A",
+    "editorFg": "#CFE8EF",
+    "gutterBg": "#0B1F2A",
+    "gutterFg": "#4B7080",
+    "gutterFgActive": "#CFE8EF",
+    "currentLine": "#10303F",
+    "selection": "#1D5B73",
+    "caret": "#7FE5FF",
+    "indentGuide": "#173A4A",
+    "keyword": "#5CC8FF",
+    "type": "#4FE3C1",
+    "builtin": "#9ED8FF",
+    "string": "#FFD479",
+    "number": "#FF9E7A",
+    "comment": "#5E8A99",
+    "operator": "#A6C8D3",
+    "constant": "#FFB86C",
+    "uiBg": "#0F2733",
+    "panelBg": "#0B1F2A",
+    "tabActiveBg": "#0B1F2A",
+    "tabInactiveBg": "#0F2733",
+    "statusBg": "#0E6E8C",
+    "popupBg": "#0F2733",
+    "popupSelBg": "#0E6E8C",
+    "consoleBg": "#071720",
+    "consoleInput": "#7FE5FF"
+  }
+}

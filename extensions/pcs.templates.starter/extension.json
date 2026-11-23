@@ -1,0 +1,31 @@
+{
+  "id": "pcs.templates.starter",
+  "name": "Starter Program Templates",
+  "version": "1.0.0",
+  "author": "PCScript",
+  "description": "Templates offered by File > New From Template.",
+  "contributes": {
+    "templates": [
+      {
+        "name": "Blank program",
+        "description": "Just a header comment",
+        "file": "templates/blank.pcs"
+      },
+      {
+        "name": "Menu program",
+        "description": "A REPEAT loop with a CASE menu",
+        "file": "templates/menu.pcs"
+      },
+      {
+        "name": "Input validation",
+        "description": "Keeps asking until a valid number is entered",
+        "file": "templates/validate.pcs"
+      },
+      {
+        "name": "Text file demo",
+        "description": "Writes and reads back a text file",
+        "file": "templates/files.pcs"
+      }
+    ]
+  }
+}

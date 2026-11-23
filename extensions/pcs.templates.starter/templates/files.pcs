@@ -1,0 +1,15 @@
+// Write three lines to a text file, then read them back
+DECLARE Line : STRING
+
+OPENFILE "notes.txt" FOR WRITE
+WRITEFILE "notes.txt", "First line"
+WRITEFILE "notes.txt", "Second line"
+WRITEFILE "notes.txt", "Third line"
+CLOSEFILE "notes.txt"
+
+OPENFILE "notes.txt" FOR READ
+WHILE NOT EOF("notes.txt") DO
+    READFILE "notes.txt", Line
+    OUTPUT Line
+ENDWHILE
+CLOSEFILE "notes.txt"

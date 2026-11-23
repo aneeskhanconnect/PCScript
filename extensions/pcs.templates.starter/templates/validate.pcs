@@ -1,0 +1,11 @@
+// Input validation: keep asking until the value is between 1 and 10
+DECLARE Number : INTEGER
+
+REPEAT
+    OUTPUT "Enter a number from 1 to 10: "
+    INPUT Number
+    IF Number < 1 OR Number > 10 THEN
+        OUTPUT "That is not between 1 and 10. Try again."
+    ENDIF
+UNTIL Number >= 1 AND Number <= 10
+OUTPUT "Thank you. You entered ", Number

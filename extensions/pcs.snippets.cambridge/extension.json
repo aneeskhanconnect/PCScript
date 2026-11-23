@@ -1,0 +1,66 @@
+{
+  "id": "pcs.snippets.cambridge",
+  "name": "Cambridge Algorithm Snippets",
+  "version": "1.0.0",
+  "author": "PCScript",
+  "description": "Searching, sorting, recursion, string and class snippets commonly met in IGCSE / A Level questions. Type the snippet name (for example bubblesort) on an empty line and press Tab or Enter in the suggestion list.",
+  "contributes": {
+    "snippets": [
+      {
+        "prefix": "linearsearch",
+        "description": "Linear search of an array",
+        "body": "FUNCTION LinearSearch(Data : ARRAY OF INTEGER, Size : INTEGER, Target : INTEGER) RETURNS INTEGER\n    DECLARE i : INTEGER\n    FOR i <- 1 TO Size\n        IF Data[i] = Target THEN\n            RETURN i\n        ENDIF\n    NEXT i\n    RETURN 0\nENDFUNCTION"
+      },
+      {
+        "prefix": "binarysearch",
+        "description": "Binary search of a sorted array",
+        "body": "FUNCTION BinarySearch(Data : ARRAY OF INTEGER, Size : INTEGER, Target : INTEGER) RETURNS INTEGER\n    DECLARE Low, High, Mid : INTEGER\n    Low <- 1\n    High <- Size\n    WHILE Low <= High DO\n        Mid <- (Low + High) DIV 2\n        IF Data[Mid] = Target THEN\n            RETURN Mid\n        ENDIF\n        IF Data[Mid] < Target THEN\n            Low <- Mid + 1\n        ELSE\n            High <- Mid - 1\n        ENDIF\n    ENDWHILE\n    RETURN 0\nENDFUNCTION"
+      },
+      {
+        "prefix": "bubblesort",
+        "description": "Bubble sort of an array",
+        "body": "PROCEDURE BubbleSort(BYREF Data : ARRAY OF INTEGER, BYVAL Size : INTEGER)\n    DECLARE i, j, Temp : INTEGER\n    FOR i <- 1 TO Size - 1\n        FOR j <- 1 TO Size - i\n            IF Data[j] > Data[j + 1] THEN\n                Temp <- Data[j]\n                Data[j] <- Data[j + 1]\n                Data[j + 1] <- Temp\n            ENDIF\n        NEXT j\n    NEXT i\nENDPROCEDURE"
+      },
+      {
+        "prefix": "insertionsort",
+        "description": "Insertion sort of an array",
+        "body": "PROCEDURE InsertionSort(BYREF Data : ARRAY OF INTEGER, BYVAL Size : INTEGER)\n    DECLARE i, j, Key : INTEGER\n    FOR i <- 2 TO Size\n        Key <- Data[i]\n        j <- i - 1\n        WHILE j >= 1 AND Data[j] > Key DO\n            Data[j + 1] <- Data[j]\n            j <- j - 1\n        ENDWHILE\n        Data[j + 1] <- Key\n    NEXT i\nENDPROCEDURE"
+      },
+      {
+        "prefix": "factorial",
+        "description": "Recursive factorial",
+        "body": "FUNCTION Factorial(N : INTEGER) RETURNS INTEGER\n    IF N <= 1 THEN\n        RETURN 1\n    ENDIF\n    RETURN N * Factorial(N - 1)\nENDFUNCTION"
+      },
+      {
+        "prefix": "fibonacci",
+        "description": "Recursive Fibonacci",
+        "body": "FUNCTION Fibonacci(N : INTEGER) RETURNS INTEGER\n    IF N <= 1 THEN\n        RETURN N\n    ENDIF\n    RETURN Fibonacci(N - 1) + Fibonacci(N - 2)\nENDFUNCTION"
+      },
+      {
+        "prefix": "isprime",
+        "description": "Prime number test",
+        "body": "FUNCTION IsPrime(N : INTEGER) RETURNS BOOLEAN\n    DECLARE i : INTEGER\n    IF N < 2 THEN\n        RETURN FALSE\n    ENDIF\n    FOR i <- 2 TO INT(N / 2)\n        IF N MOD i = 0 THEN\n            RETURN FALSE\n        ENDIF\n    NEXT i\n    RETURN TRUE\nENDFUNCTION"
+      },
+      {
+        "prefix": "reversestring",
+        "description": "Reverse a string",
+        "body": "FUNCTION ReverseString(Text : STRING) RETURNS STRING\n    DECLARE Result : STRING\n    DECLARE i : INTEGER\n    Result <- \"\"\n    FOR i <- LENGTH(Text) TO 1 STEP -1\n        Result <- Result & MID(Text, i, 1)\n    NEXT i\n    RETURN Result\nENDFUNCTION"
+      },
+      {
+        "prefix": "ispalindrome",
+        "description": "Palindrome test",
+        "body": "FUNCTION IsPalindrome(Text : STRING) RETURNS BOOLEAN\n    DECLARE i : INTEGER\n    FOR i <- 1 TO LENGTH(Text) DIV 2\n        IF MID(Text, i, 1) <> MID(Text, LENGTH(Text) - i + 1, 1) THEN\n            RETURN FALSE\n        ENDIF\n    NEXT i\n    RETURN TRUE\nENDFUNCTION"
+      },
+      {
+        "prefix": "gcd",
+        "description": "Greatest common divisor (Euclid)",
+        "body": "FUNCTION GCD(A : INTEGER, B : INTEGER) RETURNS INTEGER\n    DECLARE Temp : INTEGER\n    WHILE B <> 0 DO\n        Temp <- B\n        B <- A MOD B\n        A <- Temp\n    ENDWHILE\n    RETURN A\nENDFUNCTION"
+      },
+      {
+        "prefix": "stackclass",
+        "description": "Stack class (array based)",
+        "body": "CLASS Stack\n    PRIVATE Items : ARRAY[1:100] OF INTEGER\n    PRIVATE Top : INTEGER\n    PUBLIC PROCEDURE NEW()\n        Top <- 0\n    ENDPROCEDURE\n    PUBLIC PROCEDURE Push(Value : INTEGER)\n        Top <- Top + 1\n        Items[Top] <- Value\n    ENDPROCEDURE\n    PUBLIC FUNCTION Pop() RETURNS INTEGER\n        DECLARE Value : INTEGER\n        Value <- Items[Top]\n        Top <- Top - 1\n        RETURN Value\n    ENDFUNCTION\n    PUBLIC FUNCTION IsEmpty() RETURNS BOOLEAN\n        RETURN Top = 0\n    ENDFUNCTION\nENDCLASS"
+      }
+    ]
+  }
+}

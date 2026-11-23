@@ -1,0 +1,16 @@
+// Menu-driven program
+DECLARE Choice : INTEGER
+
+REPEAT
+    OUTPUT "1. Say hello"
+    OUTPUT "2. Say goodbye"
+    OUTPUT "3. Quit"
+    OUTPUT "Enter your choice: "
+    INPUT Choice
+    CASE OF Choice
+        1 : OUTPUT "Hello!"
+        2 : OUTPUT "Goodbye!"
+        3 : OUTPUT "Quitting..."
+        OTHERWISE : OUTPUT "Please enter 1, 2 or 3"
+    ENDCASE
+UNTIL Choice = 3
